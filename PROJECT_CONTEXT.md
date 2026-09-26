@@ -51,20 +51,30 @@ Consultar `ARCHITECTURE.md` para cambios estructurales y `PROJECT_INDEX.md` para
 - Environments: `DEV` y `PROD`.
 
 ### Render
-- Servicio DEV: `solqaryn-api-dev`.
-- Health: `/health/ready`.
+- DEV: `solqaryn-api-dev`, rama `dev`, health `/health/ready`, base `solqaryn_dev`.
+- PROD corporativo: `solqaryn-api-prod`, rama `main`.
+- El runtime PROD está conectado a la base canónica `solqaryn_prod`.
+- `Database__ApplyMigrationsOnStartup=false` mientras la base PROD se prepara y antes de migrar el respaldo legacy.
+- Cloudinary runtime PROD usa cloud corporativo `riyrzmob` con prefijo `solqaryn_prod`.
+- La configuración declarativa de `render.yaml` define para PROD el mismo Dockerfile/health policy de DEV; el control-plane del servicio existente requiere readback y ajuste manual si todavía conserva settings anteriores.
 
 ### Vercel
-- Proyecto DEV: `solqaryn-dev`.
+- DEV: `solqaryn-dev`.
+- PROD objetivo: `solqaryn-prod`, rama `main`, root `frontend`.
+- El frontend ya contiene routing para `solqaryn-prod.vercel.app`, `solqaryn.com` y `www.solqaryn.com` hacia `solqaryn-api-prod.onrender.com`.
+- La creación/enlace del proyecto PROD permanece pendiente mientras el conector disponible no exponga creación de proyectos.
 
 ### Aiven
 - Proyecto: `solqaryn`.
 - Servicio MySQL: `solqaryn-mysql`.
 - Bases: `solqaryn_dev` y `solqaryn_prod`.
 - Usuarios de aplicación separados por entorno.
+- Estado certificado de `solqaryn_prod` antes de migrar el respaldo: 0 tablas, 0 migraciones EF, 0 empresas, 0 productos y 0 usuarios.
+- El respaldo productivo legacy permanece separado y no debe restaurarse hasta completar y certificar la infraestructura PROD.
 
 ### Cloudflare
-- La gestión de DNS/domino se trata como infraestructura de plataforma y no se asume requisito de DEV salvo que una tarea vigente lo necesite.
+- Dominio objetivo: `solqaryn.com`.
+- DNS/cutover público se ejecuta después de crear y certificar Vercel PROD; no se debe desviar tráfico antes de esa certificación.
 
 ## 5. Dominios funcionales
 
