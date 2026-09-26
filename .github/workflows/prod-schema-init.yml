@@ -3,7 +3,7 @@ name: PROD - Initialize canonical schema
 on:
   push:
     branches:
-      - prod-schema-init-20260926
+      - main
     paths:
       - .github/workflows/prod-schema-init.yml
   workflow_dispatch:
